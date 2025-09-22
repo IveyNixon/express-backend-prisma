@@ -13,7 +13,7 @@ app.get('/', (_req, res) => {
 });
 
 app.get('/about', (_req, res) => {
-  res.send('About Page: This is running 🎯');
+  res.send('About Page: This is running correctly ✨');
 });
 
 app.get('/api/message', (_req, res) => {
@@ -22,6 +22,11 @@ app.get('/api/message', (_req, res) => {
 
 app.get('/api/time', (_req, res) => {
   res.json({ ok: true, time: new Date().toISOString() });
+});
+
+// ✅ Health check route
+app.get('/health', (_req, res) => {
+  res.status(200).json({ ok: true, message: 'Server is healthy 🚀' });
 });
 
 app.listen(port, () => {
