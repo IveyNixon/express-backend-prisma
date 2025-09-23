@@ -1,10 +1,12 @@
 {
   "name": "server",
-  "type": "module",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "nodemon app.cjs",
+    "start": "node app.cjs",
+    "postinstall": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",

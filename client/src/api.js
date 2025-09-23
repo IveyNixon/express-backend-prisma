@@ -1,29 +1,25 @@
-import axios from "axios";
+// client/src/api.js
+export async function getNotes() {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/notes`);
+  if (!res.ok) throw new Error('Failed to fetch notes');
+  return res.json();
+}
 
-// In dev, Vite proxy sends /api → http://localhost:8080
-const api = axios.create({ baseURL: "/api" });
+export async function getHealth() {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/health`);
+  if (!res.ok) throw new Error('Health check failed');
+  return res.json();
+}
 
-export const getGreeting = async () => {
-  const { data } = await api.get("/greeting");
-  return data;
-};
-
-export const getServerTime = async () => {
-  const { data } = await api.get("/health");
-  return data.time; // ISO string
-};
-
-// --- Notes ---
-export const listNotes = async () => {
-  const { data } = await api.get("/notes");
-  return data; // [{id, text, createdAt}]
-};
-
-export const createNote = async (text) => {
-  const { data } = await api.post("/notes", { text });
-  return data; // created note
-};
-
-export const deleteNote = async (id) => {
-  await api.delete(`/notes/${id}`);
-};
+export async function createNote(data) {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/notes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const msg = await res.text().catch(() => '');
+    throw new Error(`Create failed: ${msg || res.status}`);
+  }
+  return res.json();
+}
