@@ -1,0 +1,22 @@
+# Node
+node_modules/
+**/node_modules/
+npm-debug.log*
+pnpm-lock.yaml
+yarn.lock
+
+# Vite/React build
+dist/
+client/dist/
+
+# Env & Prisma
+.env
+**/.env
+.prisma/
+.prisma/**
+
+# OS/IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
