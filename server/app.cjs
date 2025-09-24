@@ -1,3 +1,6 @@
+// server/app.cjs
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -14,35 +17,30 @@ const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'http://localhost:5173';
 app.use(cors({ origin: [ALLOWED_ORIGIN], credentials: false }));
 app.use(express.json());
 
-// ===== SERVE VITE BUILD =====
-const distDir = path.resolve(__dirname, '../client/dist');
-app.use(express.static(distDir));
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(distDir, 'index.html'));
-});
+// ===== API ROUTES FIRST (so catch-all doesn't steal them) =====
 
-// ===== ROOT =====
+// root
 app.get('/', (_req, res) => {
   res.send('API is running 🚀');
 });
 
-// ===== HEALTH =====
+// health
 app.get('/api/health', (_req, res) => {
   res.status(200).json({ ok: true, message: 'Server is healthy 🛠️' });
 });
 
-// ===== TIME =====
+// current time
 app.get('/api/time', (_req, res) => {
   res.json({ ok: true, time: new Date().toISOString() });
 });
 
-// ===== NOTES (Prisma) =====
+// notes
 app.get('/api/notes', async (_req, res) => {
   try {
     const notes = await prisma.note.findMany({ orderBy: { createdAt: 'desc' } });
     res.json(notes);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Failed to fetch notes' });
   }
 });
@@ -52,10 +50,19 @@ app.post('/api/notes', async (req, res) => {
     const { text } = req.body;
     const newNote = await prisma.note.create({ data: { text } });
     res.json(newNote);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Failed to create note' });
   }
+});
+
+// ===== SERVE VITE BUILD (after APIs) =====
+const clientDist = path.join(__dirname, '../client/dist');
+app.use(express.static(clientDist));
+
+// SPA fallback — but only after API routes
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(clientDist, 'index.html'));
 });
 
 // ===== START =====

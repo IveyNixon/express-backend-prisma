@@ -1,25 +1,26 @@
-// client/src/api.js
-export async function getNotes() {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/notes`);
-  if (!res.ok) throw new Error('Failed to fetch notes');
-  return res.json();
-}
+// client/src/lib/api.js
+const API_BASE = import.meta.env.VITE_API_BASE || ''; // same origin by default
 
 export async function getHealth() {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/health`);
-  if (!res.ok) throw new Error('Health check failed');
-  return res.json();
+  const r = await fetch(`${API_BASE}/api/health`);
+  return r.json();
 }
 
-export async function createNote(data) {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/notes`, {
+export async function getTime() {
+  const r = await fetch(`${API_BASE}/api/time`);
+  return r.json();
+}
+
+export async function getNotes() {
+  const r = await fetch(`${API_BASE}/api/notes`);
+  return r.json();
+}
+
+export async function addNote(text) {
+  const r = await fetch(`${API_BASE}/api/notes`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ text }),
   });
-  if (!res.ok) {
-    const msg = await res.text().catch(() => '');
-    throw new Error(`Create failed: ${msg || res.status}`);
-  }
-  return res.json();
+  return r.json();
 }
