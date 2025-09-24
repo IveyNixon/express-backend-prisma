@@ -15,9 +15,10 @@ app.use(cors({ origin: [ALLOWED_ORIGIN], credentials: false }));
 app.use(express.json());
 
 // ===== SERVE VITE BUILD =====
-app.use(express.static(path.join(__dirname, '../client/dist')));
+const distDir = path.resolve(__dirname, '../client/dist');
+app.use(express.static(distDir));
 app.get('*', (_req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  res.sendFile(path.join(distDir, 'index.html'));
 });
 
 // ===== ROOT =====
@@ -27,7 +28,7 @@ app.get('/', (_req, res) => {
 
 // ===== HEALTH =====
 app.get('/api/health', (_req, res) => {
-  res.status(200).json({ ok: true, message: 'Server is healthy 🔧' });
+  res.status(200).json({ ok: true, message: 'Server is healthy 🛠️' });
 });
 
 // ===== TIME =====
@@ -35,12 +36,10 @@ app.get('/api/time', (_req, res) => {
   res.json({ ok: true, time: new Date().toISOString() });
 });
 
-// ===== NOTES =====
+// ===== NOTES (Prisma) =====
 app.get('/api/notes', async (_req, res) => {
   try {
-    const notes = await prisma.note.findMany({
-      orderBy: { createdAt: 'desc' }
-    });
+    const notes = await prisma.note.findMany({ orderBy: { createdAt: 'desc' } });
     res.json(notes);
   } catch (error) {
     console.error(error);
@@ -51,9 +50,7 @@ app.get('/api/notes', async (_req, res) => {
 app.post('/api/notes', async (req, res) => {
   try {
     const { text } = req.body;
-    const newNote = await prisma.note.create({
-      data: { text }
-    });
+    const newNote = await prisma.note.create({ data: { text } });
     res.json(newNote);
   } catch (error) {
     console.error(error);
@@ -61,7 +58,7 @@ app.post('/api/notes', async (req, res) => {
   }
 });
 
-// ===== START SERVER =====
+// ===== START =====
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

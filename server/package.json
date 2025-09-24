@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "type": "commonjs",
   "scripts": {
-    "start": "node app.cjs",
-    "render:build": "echo 'server build step (none)'",
-    "render:predeploy": "npx prisma migrate deploy && npx prisma generate"
+    "dev": "nodemon app.cjs",
+    "start": "node app.cjs"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "path": "^0.12.7"
   },
   "devDependencies": {
-    "prisma": "^6.16.2"
+    "nodemon": "^3.1.0"
   }
 }
