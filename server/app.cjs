@@ -1,3 +1,4 @@
+require('dotenv').config();
 // server/app.cjs
 require('dotenv').config();
 
