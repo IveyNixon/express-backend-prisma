@@ -1,25 +1,16 @@
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = import.meta.env.VITE_API_URL;
 
-export async function getHealth() {
+export const getHealth = async () => {
   const res = await fetch(`${API_URL}/health`);
   return res.json();
-}
+};
 
-export async function getNotes() {
-  const res = await fetch(`${API_URL}/notes`);
-  return res.json();
-}
-
-export async function addNote(text) {
+export const addNote = async (text) => {
   const res = await fetch(`${API_URL}/notes`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text }),
   });
+  if (!res.ok) throw new Error("Create failed");
   return res.json();
-}
-
-export async function getTime() {
-  const res = await fetch(`${API_URL}/greeting`);
-  return res.json();
-}
+};
